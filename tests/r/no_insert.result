@@ -1,0 +1,6 @@
+TRUNCATE TABLE machine;
+INSERT INTO machine VALUES();
+id,state
+1,a
+INSERT INTO machine(state) VALUES('c');
+FIXME error

@@ -12,13 +12,6 @@ CREATE TABLE machine(
 
 DELIMITER //
 
-CREATE TRIGGER machine_transition_i
-BEFORE INSERT ON machine
-FOR EACH ROW
-IF NEW.state <> 'a' THEN
-  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Illegal initial state';
-END IF //
-
 CREATE TRIGGER machine_transition_u
 BEFORE UPDATE ON machine
 FOR EACH ROW BEGIN
@@ -27,3 +20,9 @@ IF NOT EXISTS(SELECT * FROM transition WHERE a=OLD.state AND b=NEW.state) THEN
   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=@msg;
 END IF;
 END //
+
+DELIMITER ;
+
+CREATE USER IF NOT EXISTS u@'localhost' IDENTIFIED BY '';
+REVOKE ALL PRIVILEGES ON mystm.* FROM u@'localhost'; /* reproducible */
+GRANT SELECT, INSERT(id), UPDATE(state), DELETE ON mystm.machine TO u@'localhost';
