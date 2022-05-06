@@ -15,7 +15,8 @@ DELIMITER //
 CREATE TRIGGER machine_transition_u
 BEFORE UPDATE ON machine
 FOR EACH ROW BEGIN
-IF NOT EXISTS(SELECT * FROM transition WHERE a=OLD.state AND b=NEW.state) THEN
+IF OLD.state<>NEW.state
+AND NOT EXISTS(SELECT * FROM transition WHERE a=OLD.state AND b=NEW.state) THEN
   SET @msg = CONCAT('Illegal state transition: ', OLD.state, ' -> ', NEW.state);
   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=@msg;
 END IF;
