@@ -35,10 +35,11 @@ END //
 CREATE TRIGGER machine_log_i
 BEFORE INSERT ON machine_log
 FOR EACH ROW BEGIN
-SELECT state INTO @cur FROM machine_state WHERE machine=NEW.machine;
-IF NOT ISNULL(@cur) /* called by machine_i */
-AND NOT EXISTS(SELECT * FROM transition WHERE a=@cur AND b=NEW.state) THEN
-  SET @msg = CONCAT('Illegal state transition: ', @cur, ' -> ', NEW.state);
+DECLARE cur ENUM('a', 'b', 'c');
+SELECT state INTO cur FROM machine_state WHERE machine=NEW.machine;
+IF NOT ISNULL(cur) /* called by machine_i */
+AND NOT EXISTS(SELECT * FROM transition WHERE a=cur AND b=NEW.state) THEN
+  SET @msg = CONCAT('Illegal state transition: ', cur, ' -> ', NEW.state);
   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=@msg;
 END IF;
 END //
