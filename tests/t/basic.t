@@ -15,5 +15,8 @@ INSERT INTO machine(location) VALUES ('q');
 --delete old p
 DELETE FROM machine_log WHERE machine=@p AND state='a';
 
+--"update" p (duplicate)
+INSERT INTO machine_log(machine, state) VALUES (@p, 'b');
+
 --delete new p (nope)
 DELETE FROM machine_log WHERE machine=@p;
