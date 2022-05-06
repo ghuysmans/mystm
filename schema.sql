@@ -42,3 +42,11 @@ AND NOT EXISTS(SELECT * FROM transition WHERE a=@cur AND b=NEW.state) THEN
   SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT=@msg;
 END IF;
 END //
+
+CREATE TRIGGER machine_log_d
+BEFORE DELETE ON machine_log
+FOR EACH ROW BEGIN
+IF NOT EXISTS(SELECT * FROM machine_log WHERE machine=OLD.machine AND id>OLD.id) THEN
+  SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='Can''t forget the state';
+END IF;
+END //
