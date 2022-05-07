@@ -1,0 +1,4 @@
+#we don't use T-SQL
+*.sql linguist-language=sql
+
+schema.sql linguist-detectable=true
